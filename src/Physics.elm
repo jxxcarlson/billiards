@@ -8,9 +8,9 @@ type alias Vector =
 
 
 type alias Particle =
-    { c : Geometry.Circle
-    , v : Vector
-    , m : Float
+    { circle : Geometry.Circle
+    , velocity : Vector
+    , mass : Float
     }
 
 
@@ -24,20 +24,20 @@ norm_squared a =
     dot a a
 
 
-rotate : Vector -> Float -> Vector
-rotate a t =
+rotate : Float -> Vector -> Vector
+rotate theta v =
     let
         x =
-            a.x
+            v.x
 
         y =
-            a.y
+            v.y
 
         xx =
-            (cos t) * x + (sin t) * y
+            (cos theta) * x + (sin theta) * y
 
         yy =
-            -(sin t) * x + (cos t) * y
+            -(sin theta) * x + (cos theta) * y
     in
         Vector xx yy
 
@@ -53,4 +53,4 @@ angle a b =
 
 distance : Particle -> Particle -> Float
 distance a b =
-    Geometry.distance a.c.center b.c.center
+    Geometry.distance a.circle.center b.circle.center

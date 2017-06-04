@@ -230,16 +230,16 @@ updateParticle : Model -> Particle -> Particle
 updateParticle model particle =
     let
         circle =
-            particle.c
+            particle.circle
 
         center =
             circle.center
 
         new_x =
-            center.x + particle.v.x
+            center.x + particle.velocity.x
 
         new_y =
-            center.y + particle.v.y
+            center.y + particle.velocity.y
 
         new_center =
             Point new_x new_y
@@ -249,20 +249,20 @@ updateParticle model particle =
 
         new_vx =
             if (new_x > model.x_max) || (new_x < 0) then
-                -particle.v.x
+                -particle.velocity.x
             else
-                particle.v.x
+                particle.velocity.x
 
         new_vy =
             if (new_y > model.y_max) || (new_y < 0) then
-                -particle.v.y
+                -particle.velocity.y
             else
-                particle.v.y
+                particle.velocity.y
 
         new_velocity =
             Vector new_vx new_vy
     in
-        { particle | c = new_circle, v = new_velocity }
+        { particle | circle = new_circle, velocity = new_velocity }
 
 
 updateParticles : Model -> Particles
@@ -291,7 +291,7 @@ subscriptions model =
 
 renderParticle : Model -> Particle -> S.Svg msg
 renderParticle model particle =
-    Graph.drawCircle model.graphMap particle.c
+    Graph.drawCircle model.graphMap particle.circle
 
 
 renderParticles : Model -> List (S.Svg msg)

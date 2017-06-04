@@ -40,6 +40,10 @@ rgb color =
     "red"
 
 
+type alias Particles =
+    { a : Particle, b : Particle }
+
+
 
 -- MODEL
 
@@ -49,7 +53,7 @@ type alias Model =
     , count : Int
     , x_max : Float
     , y_max : Float
-    , particles : List Particle
+    , particles : Particles
     , graphMap : Graph.GraphMap
     , message : String
     , info : String
@@ -110,14 +114,17 @@ start simulatorState =
         graphMap =
             Graph.GraphMap source target
 
+        distance =
+            round (Physics.distance particle1 particle2)
+
         message =
-            "n: 0"
+            "n: 0, distance: " ++ (toString distance)
     in
         ( Model simulatorState
             0
             x_max
             y_max
-            [ particle1, particle2 ]
+            (Particles particle1 particle2)
             graphMap
             message
             ""
@@ -185,16 +192,11 @@ update_model model =
         new_count =
             model.count + 1
 
-        distance_pq =
-            case model.particles of
-                [ p1, p2 ] ->
-                    round (Physics.distance p1 p2)
-
-                _ ->
-                    -1
+        distance =
+            round (Physics.distance model.particles.a model.particles.b)
 
         bgColor =
-            if distance_pq < 5 && distance_pq >= 0 then
+            if distance < 5 then
                 yellowColor
             else
                 blackColor
@@ -212,10 +214,7 @@ update_model model =
             { oldGraphMap | targetRect = newTargetRect }
 
         new_message =
-            if distance_pq > 0 then
-                "n: " ++ (toString new_count) ++ ", distance: " ++ (toString distance_pq)
-            else
-                "n: " ++ (toString new_count)
+            "n: " ++ (toString new_count) ++ ", distance: " ++ (toString distance)
     in
         ( { model
             | particles = new_particles
@@ -266,9 +265,19 @@ updateParticle model particle =
         { particle | c = new_circle, v = new_velocity }
 
 
-updateParticles : Model -> List Particle
+updateParticles : Model -> Particles
 updateParticles model =
-    List.map (updateParticle model) model.particles
+    let
+        particles =
+            model.particles
+
+        a =
+            (updateParticle model) particles.a
+
+        b =
+            (updateParticle model) particles.b
+    in
+        Particles a b
 
 
 
@@ -287,7 +296,14 @@ renderParticle model particle =
 
 renderParticles : Model -> List (S.Svg msg)
 renderParticles model =
-    List.map (renderParticle model) model.particles
+    let
+        render =
+            (renderParticle model)
+
+        p =
+            model.particles
+    in
+        [ (render p.a), (render p.b) ]
 
 
 view : Model -> Html Msg

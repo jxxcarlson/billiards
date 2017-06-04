@@ -1,0 +1,7 @@
+== Billiards.elm
+
+A simulation of fake business.
+
+== Installation
+
+Run `make-elm src/Billiards.elm`, then open the `index.html` file.

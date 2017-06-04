@@ -151,7 +151,7 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         Reset ->
-            start Running
+            start Start
 
         Pause ->
             handlePause model

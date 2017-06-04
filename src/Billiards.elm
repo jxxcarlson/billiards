@@ -10,6 +10,8 @@ import Svg as S exposing (svg, circle)
 import Svg.Attributes as SA exposing (cx, cy, fill, width, height, r)
 import Random
 import Graph exposing (..)
+import XColor exposing (..)
+import Geometry exposing (..)
 import Physics exposing (..)
 
 
@@ -33,16 +35,9 @@ type DisplayMode
     | HistoryOff
 
 
-rgb : Color -> String
+rgb : XColor -> String
 rgb color =
     "red"
-
-
-type alias Particle =
-    { c : Graph.Circle
-    , v : Physics.Vector
-    , m : Float
-    }
 
 
 
@@ -62,11 +57,11 @@ type alias Model =
 
 
 color1 =
-    Color 255 0 0 0.8
+    XColor 255 0 0 0.8
 
 
 color2 =
-    Color 0 0 255 0.8
+    XColor 0 0 255 0.8
 
 
 circle1 =
@@ -107,10 +102,10 @@ start simulatorState =
             100.0
 
         source =
-            Graph.Rect (Point 0.0 0.0) (Size x_max y_max) transparentColor transparentColor
+            Geometry.Rect (Point 0.0 0.0) (Size x_max y_max) transparentColor transparentColor
 
         target =
-            Graph.Rect (Point 0.0 0.0) (Size 450.0 450.0) blackColor transparentColor
+            Geometry.Rect (Point 0.0 0.0) (Size 450.0 450.0) blackColor transparentColor
 
         graphMap =
             Graph.GraphMap source target
@@ -190,10 +185,46 @@ update_model model =
         new_count =
             model.count + 1
 
+        distance_pq =
+            case model.particles of
+                [ p1, p2 ] ->
+                    round (Physics.distance p1 p2)
+
+                _ ->
+                    -1
+
+        bgColor =
+            if distance_pq < 10 && distance_pq >= 0 then
+                yellowColor
+            else
+                blackColor
+
+        oldGraphMap =
+            model.graphMap
+
+        oldTargetRect =
+            oldGraphMap.targetRect
+
+        newTargetRect =
+            { oldTargetRect | fillColor = bgColor }
+
+        newGraphMap =
+            { oldGraphMap | targetRect = newTargetRect }
+
         new_message =
-            "n: " ++ (toString new_count)
+            if distance_pq > 0 then
+                "n: " ++ (toString new_count) ++ ", distance: " ++ (toString distance_pq)
+            else
+                "n: " ++ (toString new_count)
     in
-        ( { model | particles = new_particles, count = new_count, message = new_message }, Cmd.none )
+        ( { model
+            | particles = new_particles
+            , count = new_count
+            , message = new_message
+            , graphMap = newGraphMap
+          }
+        , Cmd.none
+        )
 
 
 updateParticle : Model -> Particle -> Particle

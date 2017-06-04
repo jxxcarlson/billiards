@@ -32,67 +32,8 @@ is used to define a mapping from the first rectangle to the second.
 
 import Svg as S exposing (..)
 import Svg.Attributes as SA exposing (..)
-
-
-{-| The three data structures below define
-  the needed geometric structures: points,
-  lists of points, and rectangles.
--}
-type alias Point =
-    { x : Float, y : Float }
-
-
-type alias Points =
-    List Point
-
-
-type alias Size =
-    { width : Float, height : Float }
-
-
-type alias Rect =
-    { corner : Point
-    , size : Size
-    , fillColor : Color
-    , strokeColor : Color
-    }
-
-
-type alias Color =
-    { r : Int, g : Int, b : Int, a : Float }
-
-
-whiteColor =
-    Color 255 255 255 1.0
-
-
-blackColor =
-    Color 0 0 0 1.0
-
-
-redColor =
-    Color 255 0 0 1.0
-
-
-greenColor =
-    Color 0 255 0 1.0
-
-
-blueColor =
-    Color 0 0 255 1.0
-
-
-transparentColor =
-    Color 0 0 0 0.0
-
-
-rgba : Color -> String
-rgba color =
-    "rgba(" ++ (toString color.r) ++ "," ++ (toString color.g) ++ "," ++ (toString color.b) ++ "," ++ (toString color.a) ++ ")"
-
-
-type alias Circle =
-    { center : Point, radius : Float, fillColor : Color, strokeColor : Color }
+import XColor exposing (..)
+import Geometry exposing (..)
 
 
 {-| GraphData is as in the introduction: two rectangles
@@ -254,7 +195,7 @@ data2SVG graphMap points =
 {-| drawPointList graphData "yellow" [(0.0, 0.0), (100.0, 20.0), (200.0, 0.0)]
   produces an SVG representation of the given polygonal path.
 -}
-drawPoints : GraphMap -> Color -> Points -> S.Svg msg
+drawPoints : GraphMap -> XColor -> Points -> S.Svg msg
 drawPoints graphMap color data =
     -- polyline [ fill "none", stroke "red", points (data2SVG data) ] []
     polyline [ fill "none", stroke (rgba color), points (data2SVG graphMap data) ] []
@@ -325,7 +266,7 @@ renderHistory graphMap history =
     List.map (drawCircle graphMap) history
 
 
-drawLine : GraphMap -> Color -> Point -> Point -> S.Svg msg
+drawLine : GraphMap -> XColor -> Point -> Point -> S.Svg msg
 drawLine graphMap color p q =
     drawPoints graphMap color [ p, q ]
 
@@ -334,7 +275,7 @@ drawLine graphMap color p q =
   produces an SVG representation the polgonal path
   [(0, 1.0), (1, 1.2), (2, 3.1), (3, 2.2), ..)]
 -}
-drawTimeSeries : GraphMap -> Color -> List Float -> S.Svg msg
+drawTimeSeries : GraphMap -> XColor -> List Float -> S.Svg msg
 drawTimeSeries graphMap color data =
     data |> timeSeries |> drawPoints graphMap color
 
@@ -343,6 +284,6 @@ drawTimeSeries graphMap color data =
   produces an SVG representation the polgonal path
   [(0, 1), (1, 2), (2, 3), (3, 2), ..)]
 -}
-drawIntegerTimeSeries : GraphMap -> Color -> List Int -> S.Svg msg
+drawIntegerTimeSeries : GraphMap -> XColor -> List Int -> S.Svg msg
 drawIntegerTimeSeries graphMap color data =
     data |> List.map toFloat |> timeSeries |> drawPoints graphMap color

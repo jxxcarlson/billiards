@@ -1,8 +1,17 @@
 module Physics exposing (..)
 
+import Geometry exposing (distance)
+
 
 type alias Vector =
     { x : Float, y : Float }
+
+
+type alias Particle =
+    { c : Geometry.Circle
+    , v : Vector
+    , m : Float
+    }
 
 
 dot : Vector -> Vector -> Float
@@ -40,3 +49,8 @@ angle a b =
             (dot a b) / sqrt ((norm_squared a) * (norm_squared b))
     in
         acos ratio
+
+
+distance : Particle -> Particle -> Float
+distance a b =
+    Geometry.distance a.c.center b.c.center

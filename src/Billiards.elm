@@ -194,7 +194,7 @@ update_model model =
                     -1
 
         bgColor =
-            if distance_pq < 10 && distance_pq >= 0 then
+            if distance_pq < 5 && distance_pq >= 0 then
                 yellowColor
             else
                 blackColor

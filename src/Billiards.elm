@@ -308,22 +308,51 @@ renderParticles model =
 
 view : Model -> Html Msg
 view model =
-    div [ id "graphics_area" ]
+    div
+        [ id "graphics_area"
+        , style
+            [ ( "margin-left", "35px" )
+            , ( "margin-top", "25px" )
+            , ( "padding", "25px 35px 35px 55px" )
+            , ( "width", "480px" )
+            , ( "background-color", "#eee" )
+            ]
+        ]
         [ h1 [] [ text "Billiard simulator" ]
         , svg
             [ SA.width "450", SA.height "450" ]
             ([ (Graph.boundingRect model.graphMap)
-               --, (Graph.drawRect model.graphMap (Rect (Point 50.0 50.0) (Size 4.0 4.0) color1 color1))
-               --, (Graph.drawCircle model.graphMap (Circle (Point 20.0 20.0) 4.0 color2 color2))
+
+             --, (Graph.drawRect model.graphMap (Rect (Point 50.0 50.0) (Size 4.0 4.0) color1 color1))
+             --, (Graph.drawCircle model.graphMap (Circle (Point 20.0 20.0) 4.0 color2 color2))
              ]
                 ++ (renderParticles model)
             )
         , br [] []
-        , button [ onClick Run, id "run" ] [ text "Run" ]
-        , button [ onClick Pause, id "pause" ] [ text "Pause" ]
-        , button [ onClick Reset, id "reset" ] [ text "Reset" ]
-        , span [ id "message" ] [ text model.message ]
+        , button [ onClick Run, id "run", buttonStyle ] [ text "Run" ]
+        , button [ onClick Pause, id "pause", buttonStyle ] [ text "Pause" ]
+        , button [ onClick Reset, id "reset", buttonStyle ] [ text "Reset" ]
+        , span [ id "message", labelStyle ] [ text model.message ]
         , br [] []
         , br [] []
-        , span [ id "info" ] [ text model.info ]
+        ]
+
+
+buttonStyle =
+    style
+        [ ( "height", "25px" )
+        , ( "background-color", "black" )
+        , ( "color", "white" )
+        , ( "margin-right", "10px" )
+        , ( "font-size", "12pt" )
+        ]
+
+
+labelStyle =
+    style
+        [ ( "height", "35px" )
+        , ( "background-color", "black" )
+        , ( "color", "white" )
+        , ( "margin-right", "15px" )
+        , ( "padding", "3px 8px 3px 8px" )
         ]

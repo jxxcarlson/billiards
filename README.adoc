@@ -4,4 +4,8 @@ A simulation of fake business.
 
 == Installation
 
-Run `make-elm src/Billiards.elm`, then open the `index.html` file.
+Run `elm-make src/Billiards.elm`, then open the `index.html` file.
+
+== Repo
+
+https://github.com/jxxcarlson/billiards
